@@ -1,6 +1,5 @@
 class Play extends Phaser.Scene {
 
-    //look up documentation for detune phaser 
     init()
 	{
 		this.cursors = this.input.keyboard.createCursorKeys()
@@ -31,7 +30,7 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('spacecraft', './assets/spacecraft.png');
-        this.load.image('starfield', './assets/starfield.png');
+        // this.load.image('starfield', './assets/starfield.png');
 
         // load spritesheet
         // this.load.spritesheet('spaceshipanim', './assets/spaceshipanim.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
@@ -42,27 +41,23 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explosion5', './assets/explosion4.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         this.load.spritesheet('explosioncraft', './assets/explosioncraft.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
 
-        //load orange bug atlas
+        //load orange bug sprite atlas
         this.load.atlas({
             key: 'bugsprite',
             textureURL: './assets/bugsprite.png',
             atlasURL: './assets/bugsprite.json'
         });
-        //load green bug atlas
+        //load green bug sprite atlas
         this.load.atlas({
             key: 'greenbugsprite',
             textureURL: './assets/greenbugsprite.png',
             atlasURL: './assets/greenbugsprite.json'
         });
-
-
     }
-
 
     create() {
         //SET CAMERA BOUNDS
         this.cameras.main.setBounds(0, 0, 1800, 480);
-
         const width = this.scale.width
         const height = this.scale.height
 
@@ -83,23 +78,15 @@ class Play extends Phaser.Scene {
 		.setScrollFactor(0.4)
         // this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
 
-        // purple UI background
-
+        // ADD PURPLE TOP RECT AND BORDER IMAGES
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x5e5ad6).setOrigin(0, 0).setScrollFactor(0);
-
-
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x1c6925).setOrigin(0 ,0).setScrollFactor(0);
         this.add.image(0, 0, 'topborder').setOrigin(0 ,0).setScrollFactor(0);
         this.add.image(0, game.config.height - borderUISize, 'bottomborder').setOrigin(0, 0).setScrollFactor(0);
         this.add.image(0, 0, 'leftborder').setOrigin(0, 0).setScrollFactor(0);
         this.add.image(game.config.width - borderUISize, 0, 'rightborder').setOrigin(0, 0).setScrollFactor(0);
 
-        // white borders
-        // this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0).setScrollFactor(0);
-        // this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0).setScrollFactor(0);
-        // this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0).setScrollFactor(0);
-        // this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0).setScrollFactor(0);
-
+        //Create Animations for bugs
         this.anims.create({
             key: 'bugwiggle',
             frames: [
@@ -130,23 +117,22 @@ class Play extends Phaser.Scene {
             repeat: -1
         });
 
-
-
         // add Rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0).setScrollFactor(0);
 
-        // add Spaceships (x3)
+        // add bugs (x3)
         this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'bugsprite', 0, 30).setOrigin(0, 0).setScrollFactor(0);
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'bugsprite', 0, 20).setOrigin(0,0).setScrollFactor(0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'bugsprite', 0, 10).setOrigin(0,0).setScrollFactor(0);
 
-        //start playing animation "bugwiggle" for the spaceship class instances (they extend sprite class)
+        //start playing animation "bugwiggle" for the bugs (spaceship class instances) (they extend sprite class)
         this.ship01.play("bugwiggle");
         this.ship02.play("bugwiggle");
         this.ship03.play("bugwiggle");
 
+        //Add Faster green bug
         this.ship04 = new Spacecraft(this, game.config.width + borderUISize*6, borderUISize*9, 'greenbugsprite', 0, 50).setOrigin(0, 0).setScrollFactor(0);
-
+        //start playing animation "greenbugwiggle" for green bug (spacecraft class instance)
         this.ship04.play("greenbugwiggle");
 
         // define keys
@@ -155,12 +141,7 @@ class Play extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-        // animation config
-        // this.anims.create({
-        //     key: 'spaceshipanim',
-        //     frames: this.anims.generateFrameNumbers('spaceshipanim', { start: 0, end: 9, first: 0}),
-        //     frameRate: 30
-        // });
+        //Create explosion animations
         this.anims.create({
             key: 'explode1',
             frames: this.anims.generateFrameNumbers('explosion1', { start: 0, end: 9, first: 0}),
@@ -194,11 +175,11 @@ class Play extends Phaser.Scene {
 
         // initialize score
         this.p1Score = 0;
+
         // display score
         let scoreConfig = { fontFamily: 'Courier', fontSize: '28px', backgroundColor: '#F3B141', color: '#843605', align: 'right', padding: { top: 5, bottom: 5, }, fixedWidth: 100};
         let timeLeftTextConfig = { fontFamily: 'Courier', fontSize: '18px', backgroundColor: '#41f3cc', color: '#030366', align: 'right', padding: { top: 5, bottom: 5, }, fixedWidth: 120};
         let timeLeftConfig = { fontFamily: 'Courier', fontSize: '28px', backgroundColor: '#41f3cc', color: '#030366', align: 'right', padding: { top: 5, bottom: 5, }, fixedWidth: 40};
-
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig).setScrollFactor(0);
         this.add.text(borderUISize + borderPadding +385, borderUISize + borderPadding*2 +6, 'Time Left:', timeLeftTextConfig).setScrollFactor(0);
         this.add.text(borderUISize + borderPadding +515, borderUISize + borderPadding*2, (game.settings.timer/1000), timeLeftConfig).setScrollFactor(0);
@@ -213,20 +194,18 @@ class Play extends Phaser.Scene {
             this.gameOver = true;
         }, null, this);
 
-
+        //define helper variable to make update not change time on screen every time it is called
         this.timeCheck = (Math.round(this.clock.getOverallRemainingSeconds()));
+        //add Time to the screen using timeLeftConfig settings
         this.displayTime = this.add.text(borderUISize + borderPadding +515, borderUISize + borderPadding*2, (Math.round(this.clock.getOverallRemainingSeconds())), timeLeftConfig).setScrollFactor(0);
-
-
     }
 
     update() {
 
         let timeLeftConfig = { fontFamily: 'Courier', fontSize: '28px', backgroundColor: '#41f3cc', color: '#030366', align: 'right', padding: { top: 5, bottom: 5, }, fixedWidth: 40};
-
-        this.newTime = (Math.round(this.clock.getOverallRemainingSeconds())) 
         //set this.newTime to the current remaining seconds rounded. newTime variable used to update time display only when a second has passed, not every update call
-        
+        this.newTime = (Math.round(this.clock.getOverallRemainingSeconds())) 
+
         if(!(this.newTime == this.timeCheck)){ //if one second has passed update the time display and update timeCheck variable
         this.displayTime = this.add.text(borderUISize + borderPadding +515, borderUISize + borderPadding*2, (Math.round(this.clock.getOverallRemainingSeconds())), timeLeftConfig).setScrollFactor(0);
             this.timeCheck = this.newTime;
@@ -234,6 +213,8 @@ class Play extends Phaser.Scene {
 
         const cam = this.cameras.main
 		const speed = 5
+
+        //set up parallax scrolling camera movement
 		if ((this.cursors.right.isDown) && (!this.p1Rocket.isFiring))
 		{
 			cam.scrollX += speed
@@ -243,7 +224,7 @@ class Play extends Phaser.Scene {
 			cam.scrollX -= speed
 		}
 
-        //create camera movement for arrow keys
+        //change scene if game is over and user inputs a key
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
@@ -253,7 +234,6 @@ class Play extends Phaser.Scene {
         }
 
         // this.starfield.tilePositionX -= 4;  // update tile sprite
-
         if(!this.gameOver) {
             this.p1Rocket.update();             // update p1
             this.ship01.update();               // update spaceship (x3)
@@ -299,19 +279,15 @@ class Play extends Phaser.Scene {
     shipExplode(ship) {
         let timeLeftConfig = { fontFamily: 'Courier', fontSize: '28px', backgroundColor: '#41f3cc', color: '#030366', align: 'right', padding: { top: 5, bottom: 5, }, fixedWidth: 40};
 
-
-        
         if(ship === this.ship04)
-        { //if ship is faster spacecraft then use correct explosion animation
+        { //if ship is spacecraft class instance then use correct explosion animation
             this.explosiontype = "explosioncraft";
             this.explodetype = "explodecraft";
 
             this.clock.elapsed -=3000;            //if you hit a type 04 ship, timer gains 3 seconds
-
             this.newTime = (Math.floor(this.clock.getElapsed()/1000));
             this.timeCheck = this.newTime;
             this.displayTime = this.add.text(borderUISize + borderPadding +515, borderUISize + borderPadding*2, this.newTime, timeLeftConfig).setScrollFactor(0);
-
         }
         else
         { // if ship is not spacecraft use a standard explosion
@@ -326,7 +302,7 @@ class Play extends Phaser.Scene {
         console.log("ship : ", ship);
         ship.alpha = 0;                         
 
-        // create explosion sprite at ship's position
+        // create explosion sprite at ship's position (based on explosiontype and explodetype variables which change depending on type of ship/bug)
         let boom = this.add.sprite(ship.x, ship.y, this.explosiontype).setOrigin(0, 0).setScrollFactor(0);
         boom.anims.play(this.explodetype);             // play explode animation
         boom.on('animationcomplete', () => {    // callback after anim completes

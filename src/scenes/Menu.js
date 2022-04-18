@@ -23,7 +23,6 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
-        // menu text configuration
         this.cameras.main.setBounds(0, 0, 1800, 480);
 
         const width = this.scale.width
@@ -42,7 +41,6 @@ class Menu extends Phaser.Scene {
         .setScrollFactor(0)
         this.add.image(150, 220, 'vincent_hot')
         .setScrollFactor(0)
-
 
         let menuTitleConfig = {
             fontFamily: 'Comic Sans MS',
@@ -83,9 +81,7 @@ class Menu extends Phaser.Scene {
         fixedWidth: 0
     }
 
-
-        
-        // show menu text
+        // show menu text use configs above
         this.add.text(game.config.width/2+90, game.config.height/2 - borderUISize - borderPadding, 'BUG SHOOTER', menuTitleConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
         menuConfig.backgroundColor = '#00FF00';

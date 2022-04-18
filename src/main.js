@@ -1,3 +1,7 @@
+// Name: Vincent Bouyssounouse
+// Project Title: Bug Shooter
+// Date: April 18th   It took me around 8-9 hours to complete this project
+
 //POINT BREAKDOWN:
 //Display the time remaining (in seconds) on the screen                  10 points
 //Create new spaceship type (spacecraft class):                          20 points
@@ -7,8 +11,6 @@
 //Replace the UI borders with new artwork                                10 points
 //Create a new animated sprite for the Spaceship enemies                 10 points
 //Create a new title screen (e.g., new artwork, typography, layout)      10 points
-
-
 
 let config = {
     type: Phaser.CANVAS,
